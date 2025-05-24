@@ -1,79 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Graduation Thoughts 2025</title>
+  <title>Graduation Wall</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-    }
-    #messageForm {
-      max-width: 500px;
-      margin: 0 auto 20px;
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    textarea {
-      width: 100%;
-      height: 100px;
-      padding: 10px;
-      margin-bottom: 10px;
-      resize: none;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    #messages {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .message {
-      background: white;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 10px;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-    }
+    body { font-family: Arial; padding: 20px; background: #f8f9fa; }
+    .message { background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   </style>
 </head>
 <body>
 
-  <h1>🎓 Graduation Thoughts 2025 🎉</h1>
-
-  <div id="messageForm">
-    <textarea id="messageInput" placeholder="Write your message here..."></textarea>
-    <button onclick="addMessage()">Submit Message</button>
-  </div>
+  <h1>🎓 Graduation Wall</h1>
+  <textarea id="msgInput" placeholder="Write your message here..." rows="4" style="width:100%"></textarea><br>
+  <button onclick="submitMessage()">Submit</button>
 
   <div id="messages"></div>
 
   <script>
-    const messagesDiv = document.getElementById('messages');
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxoLUblSUtDN6mCBY81PrZ6SBO5JNkNTGamxvfYn1cN-j1f6NT4XaUHipRet8I4ji2i/exec';
 
-    function addMessage() {
-      const text = document.getElementById('messageInput').value.trim();
-      if (text === '') return;
-
-      const message = document.createElement('div');
-      message.className = 'message';
-      message.textContent = text;
-      messagesDiv.prepend(message);
-
-      document.getElementById('messageInput').value = '';
+    async function submitMessage() {
+      const msg = document.getElementById('msgInput').value.trim();
+      if (!msg) return;
+      await fetch(SHEET_URL, {
+        method: 'POST',
+        body: JSON.stringify({ message: msg }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      document.getElementById('msgInput').value = '';
+      loadMessages();
     }
+
+    async function loadMessages() {
+      const res = await fetch(SHEET_URL);
+      const data = await res.json();
+      const container = document.getElementById('messages');
+      container.innerHTML = '';
+      data.forEach(d => {
+        const div = document.createElement('div');
+        div.className = 'message';
+        div.textContent = d.message;
+        container.appendChild(div);
+      });
+    }
+
+    loadMessages();
   </script>
 
 </body>
