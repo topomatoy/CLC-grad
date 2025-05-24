@@ -16,7 +16,7 @@
   <div id="messages"></div>
 
   <script>
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxoLUblSUtDN6mCBY81PrZ6SBO5JNkNTGamxvfYn1cN-j1f6NT4XaUHipRet8I4ji2i/exec';
+    const SHEET_URL = 'https://script.google.com/macros/library/d/1M2ev74MMtwxWy3hJ7RDgrTr_sqgOcudm_FLrH-8dIgk6yA3l63Zo6A9W/1';
 
     async function submitMessage() {
       const msg = document.getElementById('msgInput').value.trim();
